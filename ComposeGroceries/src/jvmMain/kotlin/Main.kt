@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountBox
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
@@ -26,6 +27,7 @@ import factory.GoodsFactory
 val mGoods = arrayListOf(
     Goods("Hello World", GoodsType.HelloWorld, Icons.Rounded.Home),
     Goods("Learn Design", GoodsType.LearnDesign, Icons.Rounded.Favorite),
+    Goods("Chat Bot", GoodsType.ChatBot, Icons.Rounded.AccountBox),
 )
 
 @Composable

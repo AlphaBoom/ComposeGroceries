@@ -8,4 +8,5 @@ data class Goods(val name:String, val type:GoodsType, val icon:ImageVector)
 enum class GoodsType{
     HelloWorld,
     LearnDesign,
+    ChatBot,
 }
