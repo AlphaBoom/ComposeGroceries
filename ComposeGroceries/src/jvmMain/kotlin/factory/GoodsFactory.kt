@@ -5,7 +5,7 @@ import bean.Goods
 import bean.GoodsType
 import goods.ChatBot
 import goods.HelloWorld
-import goods.LearnDesign
+import goods.learndesign.LearnDesign
 
 object GoodsFactory {
     fun createGoodsComposable(goods:Goods): @Composable ()->Unit{

@@ -1,6 +1,7 @@
-package goods
+package goods.learndesign
 
 import androidx.compose.runtime.Composable
+import goods.learndesign.chapter.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -9,7 +10,10 @@ private val registeredComposable = listOf(
     Chapter("第2章 亲密性", listOf(
         { Chapter_2_Section_1() },
         { Chapter_2_Section_2() },
-        { Chapter_2_Section_3() }
+        { Chapter_2_Section_3() },
+        { Chapter_2_Section_4() },
+        { Chapter_2_Section_5() },
+        { Chapter_2_Section_6() }
     ))
 )
 
@@ -38,7 +42,7 @@ class LearnDesignViewModel {
         move(1)
     }
 
-    private fun move(value:Int) {
+    private fun move(value: Int) {
         sectionIndex += value
         if (sectionIndex >= currentChapter.sections.size && hasNext) {
             sectionIndex = 0
@@ -48,15 +52,16 @@ class LearnDesignViewModel {
             sectionIndex = currentChapter.sections.size - 1
         }
         sectionIndex = sectionIndex.coerceIn(0, currentChapter.sections.size - 1)
-        _uiState.value = createUiState()
+        _uiState.value = createUiState(value)
     }
 
-    private fun createUiState(): LearnDesignUiState {
+    private fun createUiState(step: Int = 0): LearnDesignUiState {
         return LearnDesignUiState(
             currentChapter.name,
             currentSection,
             hasNext = hasNext,
-            hasPre = hasPre
+            hasPre = hasPre,
+            step = step
         )
     }
 }
@@ -66,5 +71,6 @@ data class LearnDesignUiState(
     val chapterName: String,
     val section: @Composable () -> Unit,
     val hasNext: Boolean,
-    val hasPre: Boolean
+    val hasPre: Boolean,
+    val step: Int
 )

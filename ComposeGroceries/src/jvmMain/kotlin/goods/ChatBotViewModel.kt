@@ -16,8 +16,7 @@ class ChatBotViewModel {
         _state.value = genUiState()
         GlobalScope.launch {
             HttpClient.postMessage(message).collect{
-                val type:MessageType = messages.lastOrNull()?.type ?: MessageType.USER
-                when(type){
+                when(messages.lastOrNull()?.type ?: MessageType.USER){
                     MessageType.ROBOT -> {
                         val msg = messages.last()
                         messages[messages.lastIndex] = Message(msg.type, "${msg.message}$it")
