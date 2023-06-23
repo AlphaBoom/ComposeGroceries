@@ -1,10 +1,9 @@
-package goods
+package goods.chat
 
 import http.HttpClient
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import okhttp3.internal.toImmutableList
 
 class ChatBotViewModel {
     private val messages = arrayListOf(Message(MessageType.ROBOT, "你好有什么可以帮助您的？"))
@@ -30,7 +29,7 @@ class ChatBotViewModel {
         }
     }
 
-    private fun genUiState():ChatBotUiState{
+    private fun genUiState(): ChatBotUiState {
         return ChatBotUiState(ArrayList(messages))
     }
 }
@@ -39,7 +38,7 @@ enum class MessageType(val value:String){
     ROBOT("Robot"),USER("User")
 }
 
-data class Message(val type:MessageType, val message:String)
+data class Message(val type: MessageType, val message:String)
 
 data class ChatBotUiState(val messageList:List<Message>, val count:Int = messageList.size)
 

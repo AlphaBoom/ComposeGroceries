@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
@@ -57,7 +58,7 @@ fun Chapter_2_Section_1() {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "你的眼睛是不是停过5次？当然，这张小小的名片上放置了5项孤立的内容。\n 你是从哪里开始的？可能是从中间，因为中间的短句字体最粗。\n 接下来看什么？是不是按从左向右的顺序读？（因为这是英语。）\n如果已经读到名片的最后（即右下角），你的目光又会移向哪里？\n你是不是还会全盘再巡视一番，确保自己没有遗漏任何角落？",
+            "你的眼睛是不是停过5次？当然，这张小小的名片上放置了5项孤立的内容。 你是从哪里开始的？可能是从中间，因为中间的短句字体最粗。 接下来看什么？是不是按从左向右的顺序读？（因为这是英语。）如果已经读到名片的最后（即右下角），你的目光又会移向哪里？你是不是还会全盘再巡视一番，确保自己没有遗漏任何角落？",
             lineHeight = 1.5.em,
             textAlign = TextAlign.Start
         )
@@ -104,15 +105,15 @@ fun Chapter_2_Section_2() {
 
 @Composable
 private fun DotText(text: String, dotWidth: Dp) {
-    Row {
-        Text("·", textAlign = TextAlign.Center, modifier = Modifier.width(dotWidth))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text("•", textAlign = TextAlign.Center, fontWeight = FontWeight.Black, modifier = Modifier.width(dotWidth))
         Text(text, fontSize = 12.sp)
     }
 }
 
 @Composable
 @Preview
-fun Chapter_2_Section_3(dotWidth: Dp = 36.dp, desc: String = "") {
+fun Chapter_2_Section_3(dotWidth: Dp = 56.dp, desc: String = "") {
     Column(modifier = Modifier.padding(8.dp)) {
         Column(modifier = Modifier.border(1.dp, Color.Black).padding(8.dp)) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -309,7 +310,7 @@ fun Chapter_2_Section_6() {
         Spacer(modifier = Modifier.height(16.dp))
         Text(buildAnnotatedString {
             append("如果多个项相互之间存在很近的")
-            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)){
+            withStyle(style = SpanStyle(fontWeight = FontWeight.SemiBold)) {
                 append("亲密性")
             }
             append("，它们将成为一个视觉单元，而不是多个孤")
@@ -320,25 +321,31 @@ fun Chapter_2_Section_6() {
         Spacer(modifier = Modifier.height(8.dp))
         Text("根本目的", color = Color(131, 10, 55), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
-        Text("亲密性的根本目的是实现组织性。尽管其他原则也能达到这个目的，不过利用亲密" +
-                "性原则，只需简单地将相关的元素分在一组建立更近的亲密性，就能自动实现条理" +
-                "性和组织性。如果信息很有条理，将更容易阅读，也更容易被记住。此外还有一个" +
-                "很好的“副产品”，利用亲密性原则，还可以使空白（这是设计者们最喜欢的）更美" +
-                "观（也更有条理）。")
+        Text(
+            "亲密性的根本目的是实现组织性。尽管其他原则也能达到这个目的，不过利用亲密" +
+                    "性原则，只需简单地将相关的元素分在一组建立更近的亲密性，就能自动实现条理" +
+                    "性和组织性。如果信息很有条理，将更容易阅读，也更容易被记住。此外还有一个" +
+                    "很好的“副产品”，利用亲密性原则，还可以使空白（这是设计者们最喜欢的）更美" +
+                    "观（也更有条理）。"
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text("如何实现", color = Color(131, 10, 55), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
-        Text("微微眯起眼睛，统计眼睛停顿的次数来数一数页面上有多少个元素。如果页面上的" +
-                "项超过 3 ～ 5 个（当然，这取决于具体情况），就要看看哪些孤立的元素可以归在一" +
-                "组建立更近的亲密性，使之成为一个视觉单元。")
+        Text(
+            "微微眯起眼睛，统计眼睛停顿的次数来数一数页面上有多少个元素。如果页面上的" +
+                    "项超过 3 ～ 5 个（当然，这取决于具体情况），就要看看哪些孤立的元素可以归在一" +
+                    "组建立更近的亲密性，使之成为一个视觉单元。"
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text("要避免的问题", color = Color(131, 10, 55), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
-        Text("避免一个页面上有太多孤立的元素。" +
-                "不要在元素之间留出同样大小的空白，除非各组同属于一个子集。" +
-                "标题、子标题、图表标题、图片能否归入其相关材料？在这个问题上一定要非常清" +
-                "楚（哪怕只有一点含糊都要尽量避免）。在有很近亲密性的元素之间建立关系。" +
-                "不同属一组的元素之间不要建立关系！如果元素彼此无关，要把它们分开。" +
-                "不要仅仅因为有空白就把元素放在角落或中央。")
+        Text(
+            "避免一个页面上有太多孤立的元素。" +
+                    "不要在元素之间留出同样大小的空白，除非各组同属于一个子集。" +
+                    "标题、子标题、图表标题、图片能否归入其相关材料？在这个问题上一定要非常清" +
+                    "楚（哪怕只有一点含糊都要尽量避免）。在有很近亲密性的元素之间建立关系。" +
+                    "不同属一组的元素之间不要建立关系！如果元素彼此无关，要把它们分开。" +
+                    "不要仅仅因为有空白就把元素放在角落或中央。"
+        )
     }
 }

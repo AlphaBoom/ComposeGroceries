@@ -3,8 +3,10 @@ package factory
 import androidx.compose.runtime.Composable
 import bean.Goods
 import bean.GoodsType
-import goods.ChatBot
+import goods.DrawNest
+import goods.chat.ChatBot
 import goods.HelloWorld
+import goods.WaterEffect
 import goods.learndesign.LearnDesign
 
 object GoodsFactory {
@@ -14,6 +16,8 @@ object GoodsFactory {
                 GoodsType.HelloWorld -> HelloWorld()
                 GoodsType.LearnDesign -> LearnDesign()
                 GoodsType.ChatBot -> ChatBot()
+                GoodsType.DrawNest -> DrawNest()
+                GoodsType.WaterEffect -> WaterEffect()
             }
         }
     }

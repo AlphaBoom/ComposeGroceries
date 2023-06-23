@@ -7,3 +7,6 @@
 
 * 《写给大家看的设计书》读书笔记
 * ChatGPT聊天机器人
+* Compose Canvas代码测试
+  * Cavas Nest实现
+  * 使用Shader

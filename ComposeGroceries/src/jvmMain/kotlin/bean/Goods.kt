@@ -9,4 +9,6 @@ enum class GoodsType{
     HelloWorld,
     LearnDesign,
     ChatBot,
+    DrawNest,
+    WaterEffect,
 }
