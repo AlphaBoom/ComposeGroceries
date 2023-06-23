@@ -1,13 +1,8 @@
-// base on https://github.com/sureshg/compose-desktop-sample/blob/main/.github/workflows/
+# base on https://github.com/sureshg/compose-desktop-sample/blob/main/.github/workflows/
 name: Compose Desktop Build
-
-env:
-  GITHUB_DEPLOY: 'false'
 
 on:
   push:
-    branches:
-      - main
     tags:
       - '*'
     paths-ignore:
@@ -16,13 +11,7 @@ on:
       - 'docs/**'
       - '.github/config/labels.yml'
 
-  pull_request:
-    branches:
-      - main
-
   workflow_dispatch:
-  repository_dispatch:
-    types: [ app-release ]
 
 defaults:
   run:
@@ -31,7 +20,6 @@ defaults:
 jobs:
   build:
     name: Build Package
-    working-directory: ./ComposeGroceries
     timeout-minutes: 15
     continue-on-error: false
     # if: github.event_name  == 'pull_request'
@@ -47,20 +35,12 @@ jobs:
       - name: Check out the source code
         uses: actions/checkout@v3
 
-      - name: Download ${{ matrix.os }} OpenJDK ${{ matrix.jdk }}
-        id: download-jdk
-        uses: sormuras/download-jdk@v1
-        with:
-          feature: ${{ matrix.jdk }}
-
       - name: Set up OpenJDK ${{ matrix.jdk }}
         id: setup-java
         uses: actions/setup-java@v3
-        if: always() && steps.download-jdk.outcome == 'success'
         with:
-          distribution: jdkfile
-          java-version: ${{ env.JDK_VERSION }}
-          jdkFile: ${{ env.JDK_FILE }}
+          distribution: oracle
+          java-version: ${{ matrix.jdk }}
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3.0.8
@@ -72,41 +52,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Deploy to GitHub Packages (Linux)
-        id: gradle-deploy
-        if: env.GITHUB_DEPLOY == 'true' && runner.os == 'Linux'
-        run: |
-          ./gradlew deploy
-        env:
-          GITHUB_USER: ${{ github.repository_owner }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Gradle Build
+        working-directory: ./ComposeGroceries
         id: gradle-build
-        run: ./gradlew packageUberJarForCurrentOS package
-
-      - name: Uploading ${{ matrix.os }} uber jar
-        if: steps.gradle-build.outcome == 'success'
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.gradle-build.outputs.uber_jar_name }}
-          path: |
-            ${{ steps.gradle-build.outputs.uber_jar_path }}
-          if-no-files-found: error
+        run: ./gradlew packageReleaseDistributionForCurrentOS
 
       - name: Uploading ${{ matrix.os }} native package
-        if: steps.gradle-build.outcome == 'success'
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.gradle-build.outputs.app_pkg_name }}
+          name: release-artifacts
           path: |
-            ${{ steps.gradle-build.outputs.app_pkg_path }}
+           ./ComposeGroceries/build/compose/binaries/main-release/msi/
           if-no-files-found: error
 
 
   release:
     name: Release new version.
-    working-directory: ./ComposeGroceries
     needs: [ build ]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
@@ -142,7 +103,7 @@ jobs:
           body: ${{ steps.github_release.outputs.changelog }}
           prerelease: ${{ contains(github.event.inputs.version, '-rc') || contains(github.event.inputs.version, '-b') || contains(github.event.inputs.version, '-a') }}
           files: |
-            ${{ github.workspace }}/release-artifacts/**
+            ./release-artifacts/release-artifacts/**
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

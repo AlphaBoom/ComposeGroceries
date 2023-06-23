@@ -39,5 +39,10 @@ compose.desktop {
             packageName = "ComposeGroceries"
             packageVersion = "1.0.0"
         }
+        buildTypes.release {
+            proguard {
+                configurationFiles.from("proguard-rules.pro")
+            }
+        }
     }
 }
