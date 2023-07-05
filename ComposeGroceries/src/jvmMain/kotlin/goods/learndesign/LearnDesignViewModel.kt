@@ -14,6 +14,12 @@ private val registeredComposable = listOf(
         { Chapter_2_Section_4() },
         { Chapter_2_Section_5() },
         { Chapter_2_Section_6() }
+    )),
+    Chapter("第3章 对齐", listOf(
+        { Chapter_3_Section_1() },
+        { Chapter_3_Section_2() },
+        { Chapter_3_Section_3() },
+        { Chapter_3_Section_4() },
     ))
 )
 
@@ -34,6 +40,13 @@ class LearnDesignViewModel {
         }
     private val _uiState = MutableStateFlow(createUiState())
     val uiState: StateFlow<LearnDesignUiState> = _uiState.asStateFlow()
+    val chapters = registeredComposable
+
+    fun setChapterIndex(index:Int) {
+        chapterIndex = index
+        _uiState.value = createUiState()
+    }
+
     fun pre() {
         move(-1)
     }
@@ -57,6 +70,7 @@ class LearnDesignViewModel {
 
     private fun createUiState(step: Int = 0): LearnDesignUiState {
         return LearnDesignUiState(
+            chapterIndex,
             currentChapter.name,
             currentSection,
             hasNext = hasNext,
@@ -68,6 +82,7 @@ class LearnDesignViewModel {
 
 data class Chapter(val name: String, val sections: List<@Composable () -> Unit>)
 data class LearnDesignUiState(
+    val chapterIndex: Int,
     val chapterName: String,
     val section: @Composable () -> Unit,
     val hasNext: Boolean,

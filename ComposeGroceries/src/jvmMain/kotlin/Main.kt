@@ -1,22 +1,24 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import bean.Goods
 import bean.GoodsType
 import factory.GoodsFactory
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 
-val mGoods = arrayListOf(
+private val goods = arrayListOf(
     Goods("Hello World", GoodsType.HelloWorld, Icons.Rounded.Home),
     Goods("Learn Design", GoodsType.LearnDesign, Icons.Rounded.Favorite),
     Goods("Chat Bot", GoodsType.ChatBot, Icons.Rounded.AccountBox),
@@ -24,54 +26,40 @@ val mGoods = arrayListOf(
     Goods("Water effect", GoodsType.WaterEffect, Icons.Rounded.ArrowForward)
 )
 
-@Composable
-fun GoodsDetail(goods: Goods) {
-    Surface(modifier = Modifier.padding(16.dp)) {
-        GoodsFactory.createGoodsComposable(goods)()
-    }
-}
+private val mutableWindowEvents = MutableStateFlow<KeyEvent?>(null)
 
-@Composable
-fun GoodsShelves(selectedItem: Int, onItemClick: (Int, Goods) -> Unit) {
-    NavigationRail {
-        mGoods.forEachIndexed { index, goods ->
-            Surface {
-                NavigationRailItem(
-                    selected = selectedItem == index,
-                    onClick = { onItemClick(index, goods) },
-                    icon = { Icon(goods.icon, contentDescription = null) },
-                    label = { Text(goods.name) },
-                    modifier = Modifier.size(width = 140.dp, height = 72.dp)
-                )
-            }
-        }
-    }
-}
+val windowEvents: Flow<KeyEvent> = mutableWindowEvents.filterNotNull()
 
 @Composable
 @Preview
-fun App() {
-    var selectedItem by remember { mutableStateOf(0) }
-    var currentGoods by remember { mutableStateOf(mGoods[selectedItem]) }
-    Row {
-        GoodsShelves(selectedItem) { index, goods ->
-            selectedItem = index
-            currentGoods = goods
-        }
-        GoodsDetail(currentGoods)
-    }
+fun App(goods: Goods) {
+    GoodsFactory.createGoodsComposable(goods)()
 }
 
 fun main() {
     application {
+        var currentGoods by remember { mutableStateOf(goods[1]) }
         Window(
             icon = painterResource("logo.png"),
             onCloseRequest = ::exitApplication,
-            title = "Compose Groceries"
+            title = "Compose Groceries",
+            onPreviewKeyEvent = {
+                mutableWindowEvents.value = it
+                false
+            }
         ) {
+            MenuBar {
+                Menu("Shelves") {
+                    goods.forEach {
+                        Item(it.name, enabled = it != currentGoods,onClick = {
+                            currentGoods = it
+                        })
+                    }
+                }
+            }
             Surface(modifier = Modifier.fillMaxSize()) {
                 MaterialTheme {
-                    App()
+                    App(currentGoods)
                 }
             }
         }
