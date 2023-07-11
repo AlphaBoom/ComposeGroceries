@@ -11,4 +11,5 @@ enum class GoodsType{
     ChatBot,
     DrawNest,
     WaterEffect,
+    ClipboardTTS,
 }

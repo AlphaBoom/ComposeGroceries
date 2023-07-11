@@ -3,6 +3,7 @@ package factory
 import androidx.compose.runtime.Composable
 import bean.Goods
 import bean.GoodsType
+import goods.ClipboardTTS
 import goods.DrawNest
 import goods.chat.ChatBot
 import goods.HelloWorld
@@ -18,6 +19,7 @@ object GoodsFactory {
                 GoodsType.ChatBot -> ChatBot()
                 GoodsType.DrawNest -> DrawNest()
                 GoodsType.WaterEffect -> WaterEffect()
+                GoodsType.ClipboardTTS -> ClipboardTTS()
             }
         }
     }
