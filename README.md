@@ -10,3 +10,4 @@
 * Compose Canvas代码测试
   * Cavas Nest实现
   * 使用Shader
+* 监听剪贴板的TTS功能
