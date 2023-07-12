@@ -55,14 +55,14 @@ jobs:
       - name: Gradle Build
         working-directory: ./ComposeGroceries
         id: gradle-build
-        run: ./gradlew packageReleaseDistributionForCurrentOS
+        run: ./gradlew packageDistributionForCurrentOS
 
       - name: Uploading ${{ matrix.os }} native package
         uses: actions/upload-artifact@v3
         with:
           name: release-artifacts
           path: |
-           ./ComposeGroceries/build/compose/binaries/main-release/msi/
+           ./ComposeGroceries/build/compose/binaries/main/msi/
           if-no-files-found: error
 
 
