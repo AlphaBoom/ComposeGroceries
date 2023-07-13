@@ -45,7 +45,11 @@ object TtsManager {
     private val client by lazy {
         TextToSpeechClient.create()
     }
-    private val cache = mutableMapOf<String, ByteString>()
+    private val cache = object:LinkedHashMap<String, ByteString>(0, 0.75f, true){
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, ByteString>?): Boolean {
+            return size > 100
+        }
+    }
     private var supportVoiceList:List<Voice> = emptyList()
 
     @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
