@@ -47,7 +47,7 @@ fun main() {
         val appState by AppViewModel.appState.collectAsState()
         if (appState.clipboardTTS) {
             Tray(
-                rememberVectorPainter(Icons.Rounded.ThumbUp),
+                rememberVectorPainter(Icons.Rounded.ContentPasteSearch),
                 onAction = {
                     AppViewModel.showPanel()
                 },

@@ -2,6 +2,9 @@ import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.NativeHookException
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
+import com.github.kwhat.jnativehook.mouse.NativeMouseEvent
+import com.github.kwhat.jnativehook.mouse.NativeMouseListener
+import com.github.kwhat.jnativehook.mouse.NativeMouseMotionListener
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -54,6 +57,14 @@ object AppViewModel : ClipboardOwner {
 
                 override fun nativeKeyTyped(nativeEvent: NativeKeyEvent) {
                     if (nativeEvent.keyChar == 'o' && (nativeEvent.modifiers and NativeKeyEvent.CTRL_MASK) != 0) {
+                        playLatestTts()
+                    }
+                }
+
+            })
+            GlobalScreen.addNativeMouseListener(object :NativeMouseListener{
+                override fun nativeMousePressed(nativeEvent: NativeMouseEvent) {
+                    if (nativeEvent.button == 5) {
                         playLatestTts()
                     }
                 }
@@ -117,6 +128,7 @@ object AppViewModel : ClipboardOwner {
             _last = what
             _clipboardHistory.tryEmit(what)
             clipboard.setContents(transferable, this)
+            failedClipboardCnt = 0
         } catch (e: Exception) {
             e.printStackTrace()
             failedClipboardCnt += 1

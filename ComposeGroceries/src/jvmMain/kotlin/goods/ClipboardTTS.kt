@@ -8,11 +8,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Mic
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.google.cloud.texttospeech.v1.Voice
@@ -51,6 +53,7 @@ fun ClipboardTTS() {
     val appState by AppViewModel.appState.collectAsState()
     val clipboardValue = remember { mutableStateListOf<String>() }
     var supportedVoiceList: List<Voice> by remember { mutableStateOf(emptyList()) }
+    var voiceFilter by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
         supportedVoiceList = TtsManager.getSupportVoiceList()
         AppViewModel.clipboardHistory.collect {
@@ -65,13 +68,26 @@ fun ClipboardTTS() {
             })
         }
         Row {
+            Spacer(Modifier.width(8.dp))
             Box {
                 var expanded by remember { mutableStateOf(false) }
-                Text("当前声音：${TtsManager.currentVoiceName}", modifier = Modifier.clickable {
+                OutlinedTextField(modifier = Modifier.width(240.dp).onFocusChanged {
+                    if (!it.hasFocus) {
+                        expanded = false
+                    }
+                }, value = if (expanded) {
+                    voiceFilter
+                } else {
+                    TtsManager.currentVoiceName
+                }, onValueChange = {
                     expanded = true
-                })
-                DropdownMenu(expanded, offset = DpOffset(66.dp, 0.dp),onDismissRequest = { expanded = false }, modifier = Modifier.requiredHeightIn(max=360.dp)) {
-                    supportedVoiceList.map { voice -> voice.name }.forEach {
+                    voiceFilter = it
+                }, label = { Text("当前声音") }, maxLines = 1)
+                DropdownMenu(expanded, offset = DpOffset(66.dp, 0.dp),
+                        focusable = false,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.requiredHeightIn(max = 360.dp)) {
+                    supportedVoiceList.map { voice -> voice.name }.filter { it.contains(voiceFilter) }.forEach {
                         DropdownMenuItem(onClick = {
                             expanded = false
                             TtsManager.setCurrentVoice(voiceName = it)
@@ -81,13 +97,13 @@ fun ClipboardTTS() {
                     }
                 }
             }
-            Spacer(Modifier.width(24.dp))
+            Spacer(Modifier.width(8.dp))
             Box {
                 var expanded by remember { mutableStateOf(false) }
                 Text("当前语言：${TtsManager.currentLanguageCode}", modifier = Modifier.clickable {
                     expanded = true
                 })
-                DropdownMenu(expanded, offset = DpOffset(66.dp, 0.dp),onDismissRequest = { expanded = false }, modifier = Modifier.requiredHeightIn(max=360.dp)) {
+                DropdownMenu(expanded, offset = DpOffset(66.dp, 0.dp), onDismissRequest = { expanded = false }, modifier = Modifier.requiredHeightIn(max = 360.dp)) {
                     supportedVoiceList.map { voice -> voice.getLanguageCodes(0) }.toSet().forEach {
                         DropdownMenuItem(onClick = {
                             expanded = false
