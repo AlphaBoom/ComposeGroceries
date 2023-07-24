@@ -96,6 +96,10 @@ object AppViewModel : ClipboardOwner {
         }
     }
 
+    fun showServerConfiguration(show:Boolean = true) {
+        currentState = currentState.copy(showServerConfiguration = show)
+    }
+
     fun showPanel() {
         currentState = currentState.copy(showPanel = true)
     }
@@ -141,4 +145,4 @@ object AppViewModel : ClipboardOwner {
     }
 }
 
-data class AppState(val clipboardTTS: Boolean = false, val showPanel: Boolean = true)
+data class AppState(val clipboardTTS: Boolean = false, val showPanel: Boolean = true, val showServerConfiguration:Boolean = false)

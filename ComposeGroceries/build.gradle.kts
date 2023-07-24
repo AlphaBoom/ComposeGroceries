@@ -3,10 +3,11 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose")
+    id("dev.hydraulic.conveyor") version "1.2"
 }
 
 group = "com.alphaboom"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     google()
@@ -29,7 +30,9 @@ kotlin {
                 implementation("com.github.kwhat:jnativehook:2.2.2")
                 implementation("com.squareup.okhttp3:okhttp:4.11.0")
                 implementation("com.squareup.okhttp3:okhttp-sse:4.11.0")
+                implementation("com.squareup.retrofit2:retrofit:2.9.0")
                 implementation("com.google.cloud:google-cloud-texttospeech:2.21.0")
+                implementation("com.darkrockstudios:mpfilepicker:1.2.0")
             }
         }
         val jvmTest by getting
@@ -41,7 +44,7 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "ComposeGroceries"
+            packageName = "compose-groceries"
             packageVersion = "1.0.3"
             windows{
                 menu = true

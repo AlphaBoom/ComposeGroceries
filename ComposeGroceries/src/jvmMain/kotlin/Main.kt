@@ -20,14 +20,15 @@ import factory.GoodsFactory
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import server.ServerConfiguration
 
 private val goods = arrayListOf(
-    Goods("Hello World", GoodsType.HelloWorld, Icons.Rounded.Home),
-    Goods("Learn Design", GoodsType.LearnDesign, Icons.Rounded.Favorite),
-    Goods("Chat Bot", GoodsType.ChatBot, Icons.Rounded.AccountBox),
-    Goods("Draw Nest", GoodsType.DrawNest, Icons.Rounded.AccountCircle),
-    Goods("Water effect", GoodsType.WaterEffect, Icons.Rounded.ArrowForward),
-    Goods("Clipboard TTS", GoodsType.ClipboardTTS, Icons.Rounded.ThumbUp)
+        Goods("Hello World", GoodsType.HelloWorld, Icons.Rounded.Home),
+        Goods("Learn Design", GoodsType.LearnDesign, Icons.Rounded.Favorite),
+        Goods("Chat Bot", GoodsType.ChatBot, Icons.Rounded.AccountBox),
+        Goods("Draw Nest", GoodsType.DrawNest, Icons.Rounded.AccountCircle),
+        Goods("Water effect", GoodsType.WaterEffect, Icons.Rounded.ArrowForward),
+        Goods("Clipboard TTS", GoodsType.ClipboardTTS, Icons.Rounded.ThumbUp)
 )
 
 private val mutableWindowEvents = MutableStateFlow<KeyEvent?>(null)
@@ -47,30 +48,30 @@ fun main() {
         val appState by AppViewModel.appState.collectAsState()
         if (appState.clipboardTTS) {
             Tray(
-                rememberVectorPainter(Icons.Rounded.ContentPasteSearch),
-                onAction = {
-                    AppViewModel.showPanel()
-                },
-                menu = {
-                    Item("Exit") {
-                        exitApplication()
+                    rememberVectorPainter(Icons.Rounded.ContentPasteSearch),
+                    onAction = {
+                        AppViewModel.showPanel()
+                    },
+                    menu = {
+                        Item("Exit") {
+                            exitApplication()
+                        }
                     }
-                }
             )
         }
         if (appState.showPanel) {
             Window(
-                icon = painterResource("logo.png"),
-                onCloseRequest = {
-                    AppViewModel.handleCloseRequest {
-                        exitApplication()
+                    icon = painterResource("logo.png"),
+                    onCloseRequest = {
+                        AppViewModel.handleCloseRequest {
+                            exitApplication()
+                        }
+                    },
+                    title = "Compose Groceries",
+                    onPreviewKeyEvent = {
+                        mutableWindowEvents.value = it
+                        false
                     }
-                },
-                title = "Compose Groceries",
-                onPreviewKeyEvent = {
-                    mutableWindowEvents.value = it
-                    false
-                }
             ) {
                 MenuBar {
                     Menu("Shelves") {
@@ -80,12 +81,22 @@ fun main() {
                             })
                         }
                     }
+                    Menu("Server") {
+                        Item("打开配置", onClick = {
+                            AppViewModel.showServerConfiguration(true)
+                        })
+                    }
                 }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     MaterialTheme {
                         App(currentGoods)
                     }
+                }
+            }
+            if (appState.showServerConfiguration) {
+                Window(onCloseRequest = { AppViewModel.showServerConfiguration(false) }, title = "本地服务配置页面") {
+                    ServerConfiguration()
                 }
             }
         }
